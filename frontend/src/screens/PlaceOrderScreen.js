@@ -1,25 +1,25 @@
-import Axios from 'axios';
-import React, { useContext, useEffect, useReducer } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { Link, useNavigate } from 'react-router-dom';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button';
-import ListGroup from 'react-bootstrap/ListGroup';
-import { toast } from 'react-toastify';
-import { getError } from '../utils';
-import { Store } from '../Store';
-import CheckoutSteps from '../components/checkoutSteps';
-import LoadingBox from '../components/LoadingBox';
+import Axios from "axios";
+import React, { useContext, useEffect, useReducer } from "react";
+import { Helmet } from "react-helmet-async";
+import { Link, useNavigate } from "react-router-dom";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
+import ListGroup from "react-bootstrap/ListGroup";
+import { toast } from "react-toastify";
+import { getError } from "../utils";
+import { Store } from "../Store";
+import CheckoutSteps from "../components/checkoutSteps";
+import LoadingBox from "../components/LoadingBox";
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'CREATE_REQUEST':
+    case "CREATE_REQUEST":
       return { ...state, loading: true };
-    case 'CREATE_SUCCESS':
+    case "CREATE_SUCCESS":
       return { ...state, loading: false };
-    case 'CREATE_FAIL':
+    case "CREATE_FAIL":
       return { ...state, loading: false };
     default:
       return state;
@@ -43,10 +43,10 @@ export default function PlaceOrderScreen() {
 
   const placeOrderHandler = async () => {
     try {
-      dispatch({ type: 'CREATE_REQUEST' });
+      dispatch({ type: "CREATE_REQUEST" });
 
       const { data } = await Axios.post(
-        '/api/orders',
+        "http://localhost:5000/api/orders",
         {
           orderItems: cart.cartItems,
           shippingAddress: cart.shippingAddress,
@@ -62,19 +62,19 @@ export default function PlaceOrderScreen() {
           },
         }
       );
-      ctxDispatch({ type: 'CART_CLEAR' });
-      dispatch({ type: 'CREATE_SUCCESS' });
-      localStorage.removeItem('cartItems');
+      ctxDispatch({ type: "CART_CLEAR" });
+      dispatch({ type: "CREATE_SUCCESS" });
+      localStorage.removeItem("cartItems");
       navigate(`/order/${data.order._id}`);
     } catch (err) {
-      dispatch({ type: 'CREATE_FAIL' });
+      dispatch({ type: "CREATE_FAIL" });
       toast.error(getError(err));
     }
   };
 
   useEffect(() => {
     if (!cart.paymentMethod) {
-      navigate('/payment');
+      navigate("/payment");
     }
   }, [cart, navigate]);
 
@@ -84,10 +84,10 @@ export default function PlaceOrderScreen() {
       <Helmet>
         <title>Preview Order</title>
       </Helmet>
-      <h1 className="my-3">Preview Order</h1>
+      <h1 className='my-3'>Preview Order</h1>
       <Row>
         <Col md={8}>
-          <Card className="mb-3">
+          <Card className='mb-3'>
             <Card.Body>
               <Card.Title>Shipping</Card.Title>
               <Card.Text>
@@ -96,33 +96,32 @@ export default function PlaceOrderScreen() {
                 {cart.shippingAddress.city}, {cart.shippingAddress.postalCode},
                 {cart.shippingAddress.country}
               </Card.Text>
-              <Link to="/shipping">Edit</Link>
+              <Link to='/shipping'>Edit</Link>
             </Card.Body>
           </Card>
 
-          <Card className="mb-3">
+          <Card className='mb-3'>
             <Card.Body>
               <Card.Title>Payment</Card.Title>
               <Card.Text>
                 <strong>Method:</strong> {cart.paymentMethod}
               </Card.Text>
-              <Link to="/payment">Edit</Link>
+              <Link to='/payment'>Edit</Link>
             </Card.Body>
           </Card>
 
-          <Card className="mb-3">
+          <Card className='mb-3'>
             <Card.Body>
               <Card.Title>Items</Card.Title>
-              <ListGroup variant="flush">
+              <ListGroup variant='flush'>
                 {cart.cartItems.map((item) => (
                   <ListGroup.Item key={item._id}>
-                    <Row className="align-items-center">
+                    <Row className='align-items-center'>
                       <Col md={6}>
                         <img
                           src={item.image}
                           alt={item.name}
-                          className="img-fluid rounded img-thumbnail"
-                        ></img>{' '}
+                          className='img-fluid rounded img-thumbnail'></img>{" "}
                         <Link to={`/product/${item.slug}`}>{item.name}</Link>
                       </Col>
                       <Col md={3}>
@@ -133,7 +132,7 @@ export default function PlaceOrderScreen() {
                   </ListGroup.Item>
                 ))}
               </ListGroup>
-              <Link to="/cart">Edit</Link>
+              <Link to='/cart'>Edit</Link>
             </Card.Body>
           </Card>
         </Col>
@@ -141,7 +140,7 @@ export default function PlaceOrderScreen() {
           <Card>
             <Card.Body>
               <Card.Title>Order Summary</Card.Title>
-              <ListGroup variant="flush">
+              <ListGroup variant='flush'>
                 <ListGroup.Item>
                   <Row>
                     <Col>Items</Col>
@@ -171,12 +170,11 @@ export default function PlaceOrderScreen() {
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  <div className="d-grid">
+                  <div className='d-grid'>
                     <Button
-                      type="button"
+                      type='button'
                       onClick={placeOrderHandler}
-                      disabled={cart.cartItems.length === 0}
-                    >
+                      disabled={cart.cartItems.length === 0}>
                       Place Order
                     </Button>
                   </div>
